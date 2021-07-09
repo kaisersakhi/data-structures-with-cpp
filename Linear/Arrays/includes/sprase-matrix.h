@@ -5,7 +5,7 @@
 */
 
 
-#include "includes/matrix.h"
+#include "matrix.h"
 
 struct Record{
     int row;
