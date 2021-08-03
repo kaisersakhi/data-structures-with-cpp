@@ -1,3 +1,10 @@
+/*
+    Author : Kaiser Sakhi
+    Date : 02-08-2021
+    Environment : Wsl Ubuntu 20
+*/
+
+
 #include "../node.h"
 #include "../../Linear/Arrays/includes/arrayList.h"
 #include <climits>
@@ -328,7 +335,7 @@ public:
     }
 
     // this methos will concatenate two list 
-    void merge(LinkedList &mList){
+    void merge(LinkedList &mList, bool mergeMove = false){
 
         if (!(mList.getLength() > 0))
             return;
@@ -346,22 +353,24 @@ public:
 
         // Solution 2 : // attaching all orginal nodes to this list, and making 2list as null
         // this will merger in O(1)
-        // if (this->head == nullptr){
-        //     this->head = mList.head;
-        //     this->tail = mList.tail;
-        //     this->length = mList.length;
-        //     mList.head = nullptr;
-        //     mList.tail = nullptr;
-        //     mList.length = 0;
+        if (mergeMove){
+            if (this->head == nullptr){
+                this->head = mList.head;
+                this->tail = mList.tail;
+                this->length = mList.length;
+                mList.head = nullptr;
+                mList.tail = nullptr;
+                mList.length = 0;
 
-        // }else{
-        //     this->tail->next = mList.head;
-        //     this->tail = mList.tail;
-        //     this->length += mList.length;
-        //     mList.head = nullptr;
-        //     mList.tail = nullptr;
-        //     mList.length = 0;
-        // }
+            }else{
+                this->tail->next = mList.head;
+                this->tail = mList.tail;
+                this->length += mList.length;
+                mList.head = nullptr;
+                mList.tail = nullptr;
+                mList.length = 0;
+            }
+        }
 
     }
 
@@ -381,6 +390,34 @@ public:
         }
     }
 
+    // this method will check if list is having a loop in it
+
+    bool hasLoop(){
+        if (this->head != nullptr){
+            Node *p = nullptr;
+            Node *q = nullptr;
+
+            p = q = this->head;
+
+            do{
+                p = p->next;
+                q = q->next;
+                q = (q != nullptr) ? q->next : nullptr;
+                if (p == q){
+                    return true;
+                }
+            }while (q != nullptr && p != nullptr);
+
+           
+        }
+        return false;
+    }
+
+    bool isEmpty(){
+        if (this->head == nullptr)
+            return true;
+        return false;
+    }
 
     int getLength(){
         return this->length;

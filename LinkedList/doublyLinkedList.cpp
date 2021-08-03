@@ -1,64 +1,10 @@
-// #include "./node.h"
-#include <iostream>
-#include "./includes/singlyLinkedList.h"
+/*
+    Author : Kaiser Sakhi
+    Date : 02-08-2021
+    Environment : Wsl Ubuntu 20
+*/
 
-class DoublyLinkedList : public LinkedList{
-    // Node *head;
-    // Node *tail;
-    // int length;
-
-public:
-    // LinkedList::head
-
-    DoublyLinkedList() : LinkedList(){
-        this->head = nullptr;
-        this->tail = nullptr;
-        this->length = 0;
-    }    
-
-    // append / insert / pop / add
-    bool append(int data){
-
-        Node *newNode = new Node;
-        newNode->data = data;
-        newNode->pre = nullptr;
-        newNode->next = nullptr;
-
-        // special case : if list is empty
-        if (this->head == nullptr){
-            this->head = newNode;
-            this->tail = newNode;
-            ++this->length;
-            return 1;
-        }else{
-            newNode->pre = this->tail;
-            this->tail->next = newNode;
-            this->tail = newNode;
-            ++this->length;
-            return 1;
-        }
-        return 0;
-    }
-
-    void display(bool reverse = false){
-        if (this->head != nullptr){
-            
-            Node *current = nullptr;
-            if (!reverse){
-                LinkedList::display();
-                return;
-            }else 
-                current = this->tail;
-
-            while (current != nullptr){
-                std::cout<<current->data<<" ";
-                current =  current->pre;
-            }
-            std::cout<<std::endl;
-        }
-
-    }
-};
+#include "./includes/doublyLL.h"
 
 int main(){
     
@@ -70,6 +16,16 @@ int main(){
     list.append(880);
     list.display();
     std::cout<<list.getMin()<<"\n";
+    list.reverse();
+    list.remove();
+    
+    DoublyLinkedList list2;
+    list2.append(11);
+    list2.append(12);
+    list.merge(list2);// after this operation , list2 will be empty
     list.display(true);
+
+    if (!list.hasLoop())
+        std::cout<<"There is no loop in the list!\n";
     return 0;
 }
