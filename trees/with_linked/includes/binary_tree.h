@@ -6,9 +6,9 @@
 
 // Program to implement a binary tree with linked representation
 
-#include "../tree_node.h"
-#include "../../queue/includes/queue_ll.h"
-#include "../../stack/includes/stack_ll.h"
+#include "../../tree_node.h"
+#include "../../../queue/includes/queue_ll.h"
+#include "../../../stack/includes/stack_ll.h"
 
 template <class Type>
 class BinaryTree{
@@ -79,7 +79,7 @@ public:
     }
 
     void preorder(){this->preorder_recursive(this->root); std::cout<<"\n";}
-
+    void inorder(){this->inorder_recursive(this->root); std::cout<<"\n";}
 
     ~BinaryTree(){
         delete this->q;
@@ -133,12 +133,47 @@ public:
         }
     }
 
+
+    //lets for now, only get the inorderpredecessor of root node only
+
+    Type getRootInorderPredecessor(){
+        Type res ;
+        TreeNode<Type> *result =  this->getInorderPredecessor(this->root);
+        if (result != nullptr) 
+            return result->data;
+        return res;
+    }
+
+    TreeNode<Type> *search(Type key){
+        return this->search_lo(key);
+    }
+
+    void remove(Type key){
+        TreeNode<Type> *res = this->search_lo(key);
+
+        if (res == nullptr){
+            return;
+        }
+        this->deleteNode(res);
+    }
+
+
+
 protected:
     void preorder_recursive(TreeNode<Type> *node){
 
         if(node != nullptr){
             std::cout<<node->data<<" ";
             preorder_recursive(node->left_child);
+            preorder_recursive(node->right_child);
+        }
+    }
+
+    void inorder_recursive(TreeNode<Type> *node){
+
+        if(node != nullptr){
+            preorder_recursive(node->left_child);
+            std::cout<<node->data<<" ";
             preorder_recursive(node->right_child);
         }
     }
@@ -166,4 +201,229 @@ protected:
         return 0;
     } 
 
+
+    TreeNode<Type>  *getInorderPredecessor(TreeNode<Type> *node){
+        
+
+        if (node == nullptr)
+            return node;
+        if (node->left_child == nullptr){
+            // result = node->data;
+            return node;
+        }
+        node = node->left_child;
+
+        while (node->right_child != nullptr){
+            node = node->right_child;
+        }
+
+        return node;
+    }
+
+    TreeNode<Type>  *getInorderSucessor(TreeNode<Type> *node){
+        
+
+        if (node == nullptr)
+            return node;
+        if (node->right_child == nullptr){
+            // result = node->data;
+            return node;
+        }
+        node = node->right_child;
+
+        while (node->left_child != nullptr){
+            node = node->left_child;
+        }
+
+        return node;
+    }
+
+    // TreeNode<Type> *search()
+   
+
+    TreeNode<Type>* search_lo(Type key){
+       
+       // for now lets assume key would be a premitive type
+       /*
+            This is a pure binary tree with only one restriction , i.e , a node can at atmost 2 childrens
+            so, binary search will not work here, we have to use level order here to find a node
+            or this is BREADTH FIRST SEARCH
+       */
+
+
+        if (this->root == nullptr) return this->root;
+
+        if (this->root->data == key) return this->root;
+
+        QueueLL<TreeNode<Type> *> q;
+        q.enqueue(this->root);
+        TreeNode<Type> *current = nullptr;
+        while (!q.isEmpty()){
+            current = q.dequeue();
+            if (current == nullptr) continue;
+            
+            if(current->data == key) return current;
+
+            if (current->left_child != nullptr)
+                q.enqueue(current->left_child);
+            if (current->right_child != nullptr)
+                q.enqueue(current->right_child);
+            
+        }
+
+        return nullptr;
+    }
+
+    void deleteNode(TreeNode<Type> *node){
+        
+        TreeNode<Type> *q = nullptr;
+
+        if (node == nullptr) return;
+
+        if (node->left_child == nullptr && node->right_child == nullptr){
+            TreeNode<Type> *parent = this->getParent(node);
+
+            if (parent == nullptr){
+                // that means current node is the root node
+                delete this->root;
+                this->root = nullptr;
+                this->nodeCount = 0;
+                return;
+            }
+            if(parent->left_child == node){
+                parent->left_child = nullptr;
+            }else{
+                parent->right_child = nullptr;
+            }
+
+            delete node;
+            --this->nodeCount;
+            return;
+
+        }else{
+
+            if (this->getHeight_recursive(node->left_child) > this->getHeight_recursive(node->right_child)){
+                q = this->getInorderPredecessor(node);
+                node->data = q->data;
+                deleteNode(q);
+            }else{
+                q = this->getInorderSucessor(node);
+                node->data = q->data;
+                deleteNode(q);
+            }
+        }
+    }//deleteNode ends here
+
+        
+    TreeNode<Type>* getParent(TreeNode<Type> *node){
+ 
+
+        if (node != nullptr){
+            if (node == this->root){
+                return node;
+            }
+            TreeNode<Type> *current = nullptr;
+            QueueLL<TreeNode<Type> *> q;
+            q.enqueue(this->root);
+
+            while(!q.isEmpty()){
+                current = q.dequeue();
+                if (current->left_child == node || current->right_child == node){
+                    return current;
+                }
+                if (current->left_child != nullptr){
+                    q.enqueue(current->left_child);
+                }
+                if (current->right_child != nullptr){
+                    q.enqueue(current->right_child);
+                }
+            }
+        }
+        return nullptr;
+
+    }
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ TreeNode<Type>* deleteNode(TreeNode<Type> *node, Type key){
+       
+       TreeNode<Type> *q = nullptr;
+
+        if (node == nullptr)
+            return node;
+        
+        if (node->left_child == nullptr && node->left_child == nullptr){
+            // this means, that node is a leaf node
+
+            if (node == this->root){
+                root = nullptr;
+                nodeCount = 0;
+            }
+
+            TreeNode<Type> *parent = this->getParent(node);
+            if (parent->left_child == node){
+                parent->left_child = nullptr;
+            }else{
+                parent->right_child = nullptr;
+            }
+
+            delete node;
+            --this->nodeCount;
+            return nullptr;
+        }
+
+        if (key < node->data){
+            node->left_child = deleteNode(node->left_child, key);
+        }else if (key > node->data){
+            node->right_child = deleteNode(node->right_child,key);
+        }else{
+
+            if (this->getHeight_recursive(node->left_child) > this->getHeight_recursive(node->right_child)){
+                q = getInorderPredecessor(node);
+                node->data = q->data;
+                node->left_child = deleteNode(node->left_child, q->data);
+            }else{
+                q = this->getInorderSucessor(node);
+                node->data = q->data;
+                node->right_child = deleteNode(node->right_child, q->data);
+            }
+        }
+
+        return node;
+    }
+*/
