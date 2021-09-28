@@ -9,14 +9,20 @@
 
 int main(){
     BinaryTree<int> bt;
-    bt.insert(1);
-    bt.insert(2);
-    bt.insert(3);
+    bt.insert(20);
+    bt.insert(15);
+    bt.insert(25);
+    bt.insert(10);
+    bt.insert(18);    
+    bt.insert(22);
+    bt.insert(30);
+    bt.insert(9);
     // this will skip 2 as being the parent of 4 & 5,  
     // i use paper to do 
-    bt.skipCurrentParent(); 
-    bt.insert(4);
-    bt.insert(5);
+    // bt.skipCurrentParent(); 
+    // bt.skipCurrentParent(); 
+    // bt.insert(8);
+    // bt.insert(9);
     std::cout<<"Recursive Preoder : ";
     bt.preorder();
     std::cout<<"Iterative Preoder : ";
@@ -24,6 +30,22 @@ int main(){
     std::cout<<"Level Order Traversal : ";
     bt.levelOrder();
     std::cout<<"Height Of The Tree is : "<<bt.getHeight()<<"\n";
+
+    std::cout<<"Inorder Predecessor of Root is : "<<bt.getRootInorderPredecessor()<<"\n";
+
+    std::cout<<"Searching.... for 5\n";
+    TreeNode<int> *temp = bt.search(5);
+    if (temp != nullptr){
+        // that means we found the elemetn in the tree
+        std::cout<<"Element Found! \n";
+    }else{
+        std::cout<<"Element Not Found!\n";
+    }
+
+    std::cout<<"Deleting.... 2\n";
+    bt.remove(20);
+    bt.levelOrder();
+    std::cout<<"\n";
     return 0;
 }
 

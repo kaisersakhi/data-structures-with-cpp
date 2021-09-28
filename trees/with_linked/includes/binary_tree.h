@@ -27,7 +27,8 @@ public:
 
     //skipCurrentParent , is a fn which i will use for skiping a node , which 
     //may become parent of new node , this will help me in not making a tree complete
-    void skipCurrentParent(){   
+    void skipCurrentParent(){  
+        if(this->q != nullptr) 
         if (!this->q->isEmpty())
             this->q->dequeue();
     }
@@ -80,6 +81,7 @@ public:
 
     void preorder(){this->preorder_recursive(this->root); std::cout<<"\n";}
     void inorder(){this->inorder_recursive(this->root); std::cout<<"\n";}
+    void postorder(){this->postorder_recursive(this->root);  std::cout<<"\n";}
 
     ~BinaryTree(){
         delete this->q;
@@ -169,12 +171,21 @@ protected:
         }
     }
 
+    void postorder_recursive(TreeNode<Type> *node){
+
+        if(node != nullptr){
+            postorder_recursive(node->left_child);
+            postorder_recursive(node->right_child);
+            std::cout<<node->data<<" ";
+        }
+    }
+
     void inorder_recursive(TreeNode<Type> *node){
 
         if(node != nullptr){
-            preorder_recursive(node->left_child);
+            inorder_recursive(node->left_child);
             std::cout<<node->data<<" ";
-            preorder_recursive(node->right_child);
+            inorder_recursive(node->right_child);
         }
     }
 
